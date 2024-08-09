@@ -1,8 +1,9 @@
+CPU renderer written while following https://pikuma.com/courses/learn-3d-computer-graphics-programming
+
 # Build and run
 
 ```sh
-make build
-make run
+make build && make run
 ```
 
 # Project dependencies
@@ -16,11 +17,13 @@ brew install sdl2
 ### VSCode setup
 
 1. Install ms-vscode.cpptools extension
-2. Configure it to have autocomplete:
+2. Configure it to have autocomplete (see [this link](https://stackoverflow.com/questions/46258143/visual-studio-code-how-to-configure-includepath-for-better-intellisense-results)):
 
-````json
+```json
 "C_Cpp.default.includePath": [
+  "${default}",
   "/opt/homebrew/lib",
-  "/opt/homebrew/include/SDL2"
-]```
-````
+  "/opt/homebrew/include/SDL2",
+  "${workspaceRoot}"
+]
+```
