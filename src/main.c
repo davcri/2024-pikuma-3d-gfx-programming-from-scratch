@@ -6,8 +6,10 @@
 bool is_running = false;
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
-int window_width = 800;
-int window_height = 600;
+const int window_width = 800;
+const int window_height = 600;
+int framebuffer_width = window_width / 10;
+int framebuffer_height = window_height / 10;
 uint32_t *color_buffer = NULL;
 SDL_Texture *color_buffer_texture = NULL;
 
@@ -45,8 +47,8 @@ bool initialize_window(void)
 
 void setup(void)
 {
-    color_buffer = (uint32_t *)malloc(sizeof(uint32_t) * window_width * window_height);
-    color_buffer_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, window_width, window_height);
+    color_buffer = (uint32_t *)malloc(sizeof(uint32_t) * framebuffer_width * framebuffer_height);
+    color_buffer_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, framebuffer_width, framebuffer_height);
 }
 
 void update(void)
@@ -74,31 +76,45 @@ void process_input(void)
 
 void clear_color_buffer(uint32_t color)
 {
-    for (int y = 0; y < window_height; y++)
+    for (int y = 0; y < framebuffer_height; y++)
     {
-        for (int x = 0; x < window_width; x++)
+        for (int x = 0; x < framebuffer_width; x++)
         {
-            color_buffer[window_width * y + x] = color;
+            color_buffer[framebuffer_width * y + x] = color;
         }
     }
 }
 
 void render_color_buffer(void)
 {
-    SDL_UpdateTexture(color_buffer_texture, NULL, color_buffer, window_width * sizeof(uint32_t));
+    SDL_UpdateTexture(color_buffer_texture, NULL, color_buffer, framebuffer_width * sizeof(uint32_t));
     SDL_RenderCopy(renderer, color_buffer_texture, NULL, NULL);
 }
 
 void draw_grid(uint32_t lineColor)
 {
 
-    for (int y = 0; y < window_height; y++)
+    for (int y = 0; y < framebuffer_height; y++)
     {
-        for (int x = 0; x < window_width; x++)
+        for (int x = 0; x < framebuffer_width; x++)
         {
             if (x % 10 == 0 || y % 10 == 0)
             {
-                color_buffer[window_width * y + x] = lineColor;
+                color_buffer[framebuffer_width * y + x] = lineColor;
+            }
+        }
+    }
+}
+
+void draw_rectangle(int topLeftX, int topLeftY, int width, int height, uint32_t fillColor)
+{
+    for (int y = 0; y < framebuffer_height; y++)
+    {
+        for (int x = 0; x < framebuffer_width; x++)
+        {
+            if (topLeftX <= x && x < topLeftX + width && topLeftY <= y && y < topLeftY + height)
+            {
+                color_buffer[y * framebuffer_width + x] = fillColor;
             }
         }
     }
@@ -110,7 +126,14 @@ void render(void)
     SDL_RenderClear(renderer);
 
     clear_color_buffer(0xff4a4a4a);
-    draw_grid(0xff888888);
+    // draw_grid(0xff888888);
+    int centerX = (int)round(framebuffer_width * 0.5);
+    int centerY = (int)round(framebuffer_height * 0.5);
+    draw_rectangle(0, 0, centerX, centerY, 0xffff0000);
+    draw_rectangle(centerX, 0, centerX, centerY, 0xffffff00);
+    draw_rectangle(centerX, centerY, centerX, centerY, 0xff0000ff);
+    draw_rectangle(0, centerY, centerX, centerY, 0xffff00ff);
+
     render_color_buffer();
 
     // SDL_Render
