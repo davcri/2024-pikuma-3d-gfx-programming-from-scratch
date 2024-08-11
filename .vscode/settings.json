@@ -21,6 +21,9 @@
         "variant": "c",
         "vector": "c",
         "complex": "c",
-        "stdlib.h": "c"
+        "stdlib.h": "c",
+        "display.h": "c",
+        "stdint.h": "c",
+        "stdio.h": "c"
     }
 }
