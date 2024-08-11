@@ -9,20 +9,10 @@ SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
 const int window_width = 800;
 const int window_height = 600;
-int framebuffer_width = window_width;
-int framebuffer_height = window_height;
-uint32_t *color_buffer = NULL;
+int framebuffer_width = window_width/10;
+int framebuffer_height = window_height/10;
+Color_ui32 *color_buffer = NULL;
 SDL_Texture *color_buffer_texture = NULL;
-
-int imax(float a, float b)
-{
-    return (int)round(fmax(a, b));
-}
-
-int imin(float a, float b)
-{
-    return (int)round(fmin(a, b));
-}
 
 bool initialize_window(void)
 {
@@ -71,6 +61,11 @@ void draw_grid(uint32_t lineColor)
     }
 }
 
+void draw_pixel(int x, int y, Color_ui32 col)
+{
+    color_buffer[framebuffer_width * y + x] = col;
+}
+
 void draw_rectangle(int topLeftX, int topLeftY, int width, int height, uint32_t fillColor)
 {
     for (int y = imax(0, topLeftY); y < imin(framebuffer_height, topLeftY + height); y++)
@@ -109,4 +104,16 @@ void destroy_window(void)
     SDL_RenderPresent(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
+}
+
+// utils
+
+int imax(float a, float b)
+{
+    return (int)round(fmax(a, b));
+}
+
+int imin(float a, float b)
+{
+    return (int)round(fmin(a, b));
 }

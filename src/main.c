@@ -42,17 +42,17 @@ void render(void)
     SDL_RenderClear(renderer);
 
     clear_color_buffer(0xff4a4a4a);
-    // draw_grid(0xff888888);
-    int centerX = (int)round(framebuffer_width * 0.5);
-    int centerY = (int)round(framebuffer_height * 0.5);
-    draw_rectangle(0, 0, centerX, centerY, 0xffff0000);
-    draw_rectangle(centerX, 0, centerX, centerY, 0xffffff00);
-    draw_rectangle(centerX, centerY, centerX, centerY, 0xff0000ff);
-    draw_rectangle(0, centerY, centerX, centerY, 0xffff00ff);
+
+    draw_grid(0xff888888);
+    draw_pixel(0, 0, 0xffff0000);
+    // int centerX = (int)round(framebuffer_width * 0.5);
+    // int centerY = (int)round(framebuffer_height * 0.5);
+    // draw_rectangle(0, 0, centerX, centerY, 0xffff0000);
+    // draw_rectangle(centerX, 0, centerX, centerY, 0xffffff00);
+    // draw_rectangle(centerX, centerY, centerX, centerY, 0xff0000ff);
+    // draw_rectangle(0, centerY, centerX, centerY, 0xffff00ff);
 
     render_color_buffer();
-
-    // SDL_Render
     SDL_RenderPresent(renderer);
 }
 

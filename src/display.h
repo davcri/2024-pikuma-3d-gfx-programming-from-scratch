@@ -5,20 +5,23 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+typedef uint32_t Color_ui32;
+
 extern SDL_Window *window; // https://stackoverflow.com/questions/496448/how-to-correctly-use-the-extern-keyword-in-c
 extern SDL_Renderer *renderer;
 extern const int window_width;
 extern const int window_height;
 extern int framebuffer_width;
 extern int framebuffer_height;
-extern uint32_t *color_buffer;
+extern Color_ui32 *color_buffer;
 extern SDL_Texture *color_buffer_texture;
 
 bool initialize_window(void);
-void draw_grid(uint32_t lineColor);
-void draw_rectangle(int topLeftX, int topLeftY, int width, int height, uint32_t fillColor);
+void draw_grid(Color_ui32 lineColor);
+void draw_rectangle(int topLeftX, int topLeftY, int width, int height, Color_ui32 fillColor);
+void draw_pixel(int x, int y, Color_ui32 color);
 void render_color_buffer(void);
-void clear_color_buffer(uint32_t color);
+void clear_color_buffer(Color_ui32 color);
 void destroy_window(void);
 
 // utils
