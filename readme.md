@@ -14,6 +14,10 @@ make build && make run
 brew install sdl2
 ```
 
+## Debugging
+
+https://code.visualstudio.com/docs/cpp/launch-json-reference
+
 ### VSCode setup
 
 1. Install ms-vscode.cpptools extension
