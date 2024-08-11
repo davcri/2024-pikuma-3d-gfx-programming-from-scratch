@@ -1,0 +1,26 @@
+{
+    "files.associations": {
+        "__hash_table": "c",
+        "__split_buffer": "c",
+        "algorithm": "c",
+        "chrono": "c",
+        "deque": "c",
+        "memory_resource": "c",
+        "fstream": "c",
+        "istream": "c",
+        "limits": "c",
+        "locale": "c",
+        "mutex": "c",
+        "random": "c",
+        "ratio": "c",
+        "semaphore": "c",
+        "span": "c",
+        "sstream": "c",
+        "string": "c",
+        "string_view": "c",
+        "variant": "c",
+        "vector": "c",
+        "complex": "c",
+        "stdlib.h": "c"
+    }
+}
