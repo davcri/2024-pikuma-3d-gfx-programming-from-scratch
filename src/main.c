@@ -1,15 +1,25 @@
 #include <stdio.h>
+#include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <SDL.h>
 
+int imax(float a, float b)
+{
+    return (int)round(fmax(a, b));
+}
+
+int imin(float a, float b)
+{
+    return (int)round(fmin(a, b));
+}
 bool is_running = false;
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
 const int window_width = 800;
 const int window_height = 600;
-int framebuffer_width = window_width / 10;
-int framebuffer_height = window_height / 10;
+int framebuffer_width = 4;  // window_width / 10;
+int framebuffer_height = 4; // window_height / 10;
 uint32_t *color_buffer = NULL;
 SDL_Texture *color_buffer_texture = NULL;
 
@@ -108,13 +118,13 @@ void draw_grid(uint32_t lineColor)
 
 void draw_rectangle(int topLeftX, int topLeftY, int width, int height, uint32_t fillColor)
 {
-    for (int y = 0; y < framebuffer_height; y++)
+    for (int y = imax(0, topLeftY); y < imin(framebuffer_height, topLeftY + height); y++)
     {
-        for (int x = 0; x < framebuffer_width; x++)
+        for (int x = imax(0, topLeftX); x < imin(framebuffer_width, topLeftX + width); x++)
         {
-            if (topLeftX <= x && x < topLeftX + width && topLeftY <= y && y < topLeftY + height)
+            if (x >= 0 && y >= 0 && x < framebuffer_width && y < framebuffer_height)
             {
-                color_buffer[y * framebuffer_width + x] = fillColor;
+                color_buffer[framebuffer_width * y + x] = fillColor;
             }
         }
     }
