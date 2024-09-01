@@ -9,8 +9,8 @@ SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
 const int window_width = 800;
 const int window_height = 600;
-int framebuffer_width = window_width/10;
-int framebuffer_height = window_height/10;
+int framebuffer_width = window_width;
+int framebuffer_height = window_height;
 Color_ui32 *color_buffer = NULL;
 SDL_Texture *color_buffer_texture = NULL;
 

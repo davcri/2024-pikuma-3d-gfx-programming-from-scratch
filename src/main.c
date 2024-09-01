@@ -5,7 +5,10 @@
 #include "vector.h"
 
 const int N_POINTS = 9 * 9 * 9;
+const int fov_factor = 640;
+vec3_t camera_position = {.x = 0., .y = 0., .z = -5};
 vec3_t cube_points[N_POINTS];
+vec2_t projected_points[N_POINTS];
 
 bool is_running = false;
 
@@ -29,8 +32,23 @@ void setup(void)
     }
 }
 
+vec2_t project(vec3_t point)
+{
+    vec2_t projected_point = {
+        .x = fov_factor * point.x / point.z,
+        .y = fov_factor * point.y / point.z};
+    return projected_point;
+}
+
 void update(void)
 {
+    for (int i = 0; i < N_POINTS; i++)
+    {
+        vec3_t point = cube_points[i];
+        point.z -= camera_position.z;
+        vec2_t projected_point = project(point);
+        projected_points[i] = projected_point;
+    }
 }
 
 void process_input(void)
@@ -54,21 +72,22 @@ void process_input(void)
 
 void render(void)
 {
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    SDL_RenderClear(renderer);
+    // draw_grid(0xff888888);
 
-    clear_color_buffer(0xff4a4a4a);
-
-    draw_grid(0xff888888);
-    draw_pixel(0, 0, 0xffff0000);
-    // int centerX = (int)round(framebuffer_width * 0.5);
-    // int centerY = (int)round(framebuffer_height * 0.5);
-    // draw_rectangle(0, 0, centerX, centerY, 0xffff0000);
-    // draw_rectangle(centerX, 0, centerX, centerY, 0xffffff00);
-    // draw_rectangle(centerX, centerY, centerX, centerY, 0xff0000ff);
-    // draw_rectangle(0, centerY, centerX, centerY, 0xffff00ff);
+    // render all projected points
+    for (int i = 0; i < N_POINTS; i++)
+    {
+        vec2_t point = projected_points[i];
+        // translate to the middle of the screen
+        point.x += window_width / 2;
+        point.y += window_height / 2;
+        // draw
+        draw_rectangle(point.x, point.y, 4, 4, 0xffff0000);
+    }
 
     render_color_buffer();
+    clear_color_buffer(0xff000000);
+
     SDL_RenderPresent(renderer);
 }
 
