@@ -24,6 +24,7 @@
         "stdlib.h": "c",
         "display.h": "c",
         "stdint.h": "c",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "vector.h": "c"
     }
 }
