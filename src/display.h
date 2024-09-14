@@ -5,6 +5,9 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define FPS 30
+#define FRAME_TARGET_TIME 1000.0 / FPS
+
 typedef uint32_t Color_ui32;
 
 extern SDL_Window *window; // https://stackoverflow.com/questions/496448/how-to-correctly-use-the-extern-keyword-in-c
