@@ -80,6 +80,38 @@ void draw_rectangle(int topLeftX, int topLeftY, int width, int height, uint32_t 
     }
 }
 
+void draw_line(int x0, int y0, int x1, int y1, Color_ui32 color)
+{
+    int delta_x = x1 - x0;
+    int delta_y = y1 - y0;
+    float m = delta_y / delta_x;
+
+    int side_length = abs(delta_x) > abs(delta_y) ? delta_x : delta_y;
+
+    float x_inc = delta_x / (float)side_length;
+    float y_inc = delta_y / (float)side_length; // the slope
+
+    float current_x = x0;
+    float current_y = y0;
+
+    for (int i = 0; i < side_length; i++)
+    {
+        draw_pixel(round(current_x), round(current_y), color);
+        current_x += x_inc;
+        current_y += y_inc;
+    }
+}
+
+/**
+ * Unfilled triangle
+ */
+void draw_triangle(int x0, int y0, int x1, int y1, int x2, int y2, Color_ui32 color)
+{
+    draw_line(x0, y0, x1, y1, color);
+    draw_line(x1, y1, x2, y2, color);
+    draw_line(x2, y2, x0, y0, color);
+}
+
 void render_color_buffer(void)
 {
     SDL_UpdateTexture(color_buffer_texture, NULL, color_buffer, framebuffer_width * sizeof(uint32_t));

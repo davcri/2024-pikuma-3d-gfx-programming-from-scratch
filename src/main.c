@@ -110,6 +110,15 @@ void render(void)
         draw_rectangle(triangle.points[0].x, triangle.points[0].y, 3, 3, col);
         draw_rectangle(triangle.points[1].x, triangle.points[1].y, 3, 3, col);
         draw_rectangle(triangle.points[2].x, triangle.points[2].y, 3, 3, col);
+
+        // draw unfilled triangle
+        draw_triangle(
+            triangle.points[0].x,
+            triangle.points[0].y,
+            triangle.points[1].x,
+            triangle.points[1].y,
+            triangle.points[2].x,
+            triangle.points[2].y, col);
     }
 
     render_color_buffer();
