@@ -11,6 +11,7 @@ extern vec3_t mesh_vertices[N_CUBE_VERTICES];
 extern face_t mesh_faces[N_CUBE_FACES];
 
 void load_cube_mesh_data();
+void load_obj_file_data(char *filename);
 
 typedef struct
 {

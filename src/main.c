@@ -22,7 +22,7 @@ void setup(void)
     color_buffer = (Color_ui32 *)malloc(sizeof(Color_ui32) * framebuffer_width * framebuffer_height);
     color_buffer_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, framebuffer_width, framebuffer_height);
 
-    load_cube_mesh_data();
+    load_obj_file_data("./assets/cube.obj");
 }
 
 vec2_t project(vec3_t point)
@@ -46,9 +46,7 @@ void update(void)
     triangles_to_render = NULL;
 
     //
-    mesh.rotation.x += 0.01;
     mesh.rotation.y += 0.01;
-    mesh.rotation.z += 0.01;
 
     int num_faces = array_length(mesh.faces);
 
@@ -107,7 +105,7 @@ void process_input(void)
 
 void render(void)
 {
-    draw_grid(0xff888888);
+    // draw_grid(0xff888888);
 
     // render all projected points
     Color_ui32 col = 0xffff0000;
