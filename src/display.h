@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define FPS 30
+#define FPS 60
 #define FRAME_TARGET_TIME 1000.0 / FPS
 
 typedef uint32_t Color_ui32;

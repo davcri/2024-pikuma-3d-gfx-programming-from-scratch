@@ -86,7 +86,7 @@ void draw_line(int x0, int y0, int x1, int y1, Color_ui32 color)
     int delta_y = y1 - y0;
     // float m = delta_y / delta_x;
 
-    int side_length = abs(delta_x) > abs(delta_y) ? delta_x : delta_y;
+    int side_length = abs(delta_x) > abs(delta_y) ? abs(delta_x) : abs(delta_y);
 
     float x_inc = delta_x / (float)side_length;
     float y_inc = delta_y / (float)side_length; // the slope
