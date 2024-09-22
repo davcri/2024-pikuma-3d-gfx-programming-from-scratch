@@ -84,7 +84,7 @@ void draw_line(int x0, int y0, int x1, int y1, Color_ui32 color)
 {
     int delta_x = x1 - x0;
     int delta_y = y1 - y0;
-    float m = delta_y / delta_x;
+    // float m = delta_y / delta_x;
 
     int side_length = abs(delta_x) > abs(delta_y) ? delta_x : delta_y;
 
