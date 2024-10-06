@@ -103,8 +103,13 @@ void update(void)
         vec3_t vec_ab = vec3_sub(vec_b, vec_a); // b - a
         vec3_t vec_ac = vec3_sub(vec_c, vec_a); // c - a
 
+        vec3_normalize(&vec_ab);
+        vec3_normalize(&vec_ac);
+
         // compute the face normal
         vec3_t face_normal = vec3_cross(vec_ab, vec_ac);
+        vec3_normalize(&face_normal);
+
         vec3_t camera_ray = vec3_sub(camera_position, vec_a); //
 
         // calculate how aligned camera ray and face normale are
