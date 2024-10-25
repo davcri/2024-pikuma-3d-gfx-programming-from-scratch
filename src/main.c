@@ -149,18 +149,26 @@ void render(void)
     for (int i = 0; i < tris_count; i++)
     {
         triangle_t triangle = triangles_to_render[i];
-
         // draw unfilled triangle
-        draw_triangle(
+        draw_filled_triangle(
             triangle.points[0].x,
             triangle.points[0].y,
             triangle.points[1].x,
             triangle.points[1].y,
             triangle.points[2].x,
             triangle.points[2].y, col);
-    }
 
+        draw_triangle(
+            triangle.points[0].x,
+            triangle.points[0].y,
+            triangle.points[1].x,
+            triangle.points[1].y,
+            triangle.points[2].x,
+            triangle.points[2].y, 0xffffffff);
+    }
     array_free(triangles_to_render);
+
+    // draw_filled_triangle(300, 100, 50, 400, 500, 700, col);
 
     render_color_buffer();
 

@@ -62,7 +62,7 @@ void load_obj_file_data(char *filename)
 
     while (fgets(line, 1024, file))
     {
-        printf("Line: %s", line);
+        // printf("Line: %s", line);
 
         // vertex
         if (strncmp(line, "v ", 2) == 0)

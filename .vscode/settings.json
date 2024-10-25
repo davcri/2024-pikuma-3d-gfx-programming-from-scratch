@@ -26,6 +26,7 @@
     "stdint.h": "c",
     "stdio.h": "c",
     "vector.h": "c",
-    "array": "c"
+    "array": "c",
+    "triangle.h": "c"
   }
 }
