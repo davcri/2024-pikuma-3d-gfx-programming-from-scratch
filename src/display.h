@@ -8,6 +8,20 @@
 #define FPS 60
 #define FRAME_TARGET_TIME 1000.0 / FPS
 
+enum cull_method
+{
+    CULL_NONE,
+    CULL_BACKFACE
+} cull_method;
+
+enum render_method
+{
+    RENDER_WIRE,
+    RENDER_WIRE_VERTEX,
+    RENDER_FILL_TRIANGLE,
+    RENDER_FILL_TRIANGLE_WIRE,
+} render_method;
+
 typedef uint32_t Color_ui32;
 
 extern SDL_Window *window; // https://stackoverflow.com/questions/496448/how-to-correctly-use-the-extern-keyword-in-c
