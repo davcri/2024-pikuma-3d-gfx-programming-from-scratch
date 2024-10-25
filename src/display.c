@@ -94,7 +94,7 @@ void draw_line(int x0, int y0, int x1, int y1, Color_ui32 color)
     float current_x = x0;
     float current_y = y0;
 
-    for (int i = 0; i < side_length; i++)
+    for (int i = 0; i <= side_length; i++)
     {
         draw_pixel(round(current_x), round(current_y), color);
         current_x += x_inc;

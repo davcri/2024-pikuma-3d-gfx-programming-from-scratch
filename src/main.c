@@ -16,7 +16,7 @@ const int fov_factor = 640;
 
 void setup(void)
 {
-    render_method = RENDER_WIRE;
+    render_method = RENDER_FILL_TRIANGLE;
     cull_method = CULL_BACKFACE;
 
     color_buffer = (Color_ui32 *)malloc(sizeof(Color_ui32) * framebuffer_width * framebuffer_height);
