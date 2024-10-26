@@ -10,11 +10,13 @@ typedef struct
     int a;
     int b;
     int c;
+    Color_ui32 color;
 } face_t;
 
 typedef struct
 {
     vec2_t points[3];
+    Color_ui32 color;
 } triangle_t;
 
 void draw_filled_triangle(int x0, int y0, int x1, int y1, int x2, int y2, Color_ui32 color);
