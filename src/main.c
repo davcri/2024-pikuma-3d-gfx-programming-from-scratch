@@ -14,6 +14,27 @@ int previous_frame_time;
 vec3_t camera_position = {0., 0., 0};
 const int fov_factor = 640;
 
+void sort_by_avg_depth(triangle_t *tris, int n)
+{
+    // bubble sort
+    for (int i = 0; i < n; i++)
+    {
+        bool swapped = false;
+
+        for (int j = i; j < n; j++)
+        {
+            if (tris[i].avg_depth < tris[j].avg_depth)
+            {
+                triangle_t tmp = tris[i];
+                tris[i] = tris[j];
+                tris[j] = tmp;
+
+                swapped = true;
+            }
+        }
+    }
+}
+
 void setup(void)
 {
     render_method = RENDER_FILL_TRIANGLE;
@@ -87,7 +108,7 @@ void update(void)
     mesh.rotation.y += 0.01;
     mesh.rotation.x += 0.01;
 
-    // loop faces
+    // loop all faces
     int num_faces = array_length(mesh.faces);
     for (int i = 0; i < num_faces; i++)
     {
@@ -156,15 +177,22 @@ void update(void)
             projected_points[j].y += window_height / 2;
         }
 
+        // calculate the average depth for each face based on the vertices after transformation
+        float avg_depth = (transformed_vertices[0].z + transformed_vertices[1].z + transformed_vertices[2].z) / 3;
+
         triangle_t projected_triangle = {
             .points = {
                 {projected_points[0].x, projected_points[0].y},
                 {projected_points[1].x, projected_points[1].y},
                 {projected_points[2].x, projected_points[2].y},
             },
-            .color = mesh_face.color};
+            .color = mesh_face.color,
+            .avg_depth = avg_depth};
         array_push(triangles_to_render, projected_triangle);
     }
+
+    // sort triangles by avg depth
+    sort_by_avg_depth(triangles_to_render, array_length(triangles_to_render));
 }
 
 void render(void)
@@ -199,6 +227,7 @@ void render(void)
                 triangle.points[2].y, 0xffffffff);
         }
 
+        // render vertices
         if (render_method == RENDER_WIRE_VERTEX)
         {
             draw_rectangle(triangle.points[0].x - 3, triangle.points[0].y - 3, 6, 6, 0xffffaaff);
