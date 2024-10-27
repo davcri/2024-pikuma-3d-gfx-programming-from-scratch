@@ -17,7 +17,9 @@ typedef struct
 {
     vec3_t *vertices;
     face_t *faces;
-    vec3_t rotation; // euler rotation
+    vec3_t rotation;    // euler rotation
+    vec3_t scale;       // scale XYZ
+    vec3_t translation; // translation XYZ
 } mesh_t;
 
 extern mesh_t mesh; // global mesh

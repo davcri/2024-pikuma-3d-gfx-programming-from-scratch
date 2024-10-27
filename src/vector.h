@@ -16,10 +16,8 @@ typedef struct
 
 typedef struct
 {
-    vec3_t position;
-    vec3_t rotation; // this should be a quaternion, but for simplicity it will be an xyz Euler
-    float fov;
-} camera_t;
+    float x, y, z, w;
+} vec4_t;
 
 float vec2_length(vec2_t v);
 float vec3_length(vec3_t v);
@@ -40,4 +38,6 @@ vec3_t vec3_rotate_x(vec3_t v, float angle);
 vec3_t vec3_rotate_y(vec3_t v, float angle);
 vec3_t vec3_rotate_z(vec3_t v, float angle);
 
+vec4_t vec4_from_vec3(vec3_t v);
+vec3_t vec3_from_vec4(vec4_t v);
 #endif // VECTOR2_H
