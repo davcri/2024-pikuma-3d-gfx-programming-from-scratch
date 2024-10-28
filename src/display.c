@@ -63,7 +63,11 @@ void draw_grid(uint32_t lineColor)
 
 void draw_pixel(int x, int y, Color_ui32 col)
 {
-    color_buffer[framebuffer_width * y + x] = col;
+    // check bounds
+    if (x >= 0 && x < framebuffer_width && y >= 0 && y < framebuffer_height)
+    {
+        color_buffer[framebuffer_width * y + x] = col;
+    }
 }
 
 void draw_rectangle(int topLeftX, int topLeftY, int width, int height, uint32_t fillColor)
@@ -96,7 +100,9 @@ void draw_line(int x0, int y0, int x1, int y1, Color_ui32 color)
 
     for (int i = 0; i <= side_length; i++)
     {
+
         draw_pixel(round(current_x), round(current_y), color);
+
         current_x += x_inc;
         current_y += y_inc;
     }
