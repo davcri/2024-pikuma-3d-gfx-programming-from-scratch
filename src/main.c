@@ -21,7 +21,7 @@ bool is_running = false;
 int previous_frame_time;
 
 vec3_t camera_position = {0., 0., 0};
-const int fov_factor = 640;
+mat4_t proj_matrix;
 
 void sort_by_avg_depth(triangle_t *tris, int n)
 {
@@ -56,6 +56,12 @@ void setup(void)
 
     load_cube_mesh_data();
     // load_obj_file_data("./assets/cube.obj");
+
+    float fov = M_PI / 3.0; // radians
+    float ar = (float)window_height / (float)window_width;
+    float near = 0.1;
+    float far = 100.;
+    proj_matrix = mat4_make_perspective(fov, ar, near, far);
 }
 
 void process_input(void)
@@ -90,14 +96,6 @@ void process_input(void)
     }
 }
 
-vec2_t project(vec3_t point)
-{
-    vec2_t projected_point = {
-        .x = (fov_factor * point.x) / point.z,
-        .y = (fov_factor * point.y) / point.z};
-    return projected_point;
-}
-
 void update(void)
 {
     // Wait some time until the reach the target frame time in milliseconds
@@ -120,7 +118,7 @@ void update(void)
     mesh.rotation.z += 0.01;
     // mesh.scale.x += 0.002;
     // mesh.scale.y += 0.001;
-    mesh.translation.x += 0.01;
+    // mesh.translation.x += 0.01;
     mesh.translation.z = 5.0;
 
     // Create a scale/translation/rotation matrix
@@ -191,16 +189,21 @@ void update(void)
             }
         }
 
-        vec2_t projected_points[3];
+        vec4_t projected_points[3];
 
         // loop all the three vertices to perform projection
         for (int j = 0; j < 3; j++)
         {
-            projected_points[j] = project(vec3_from_vec4(transformed_vertices[j]));
+            // projected_points[j] = project(vec3_from_vec4(transformed_vertices[j]));
+            projected_points[j] = mat4_mul_vec4_project(proj_matrix, transformed_vertices[j]);
 
-            // scale and translate to the middle of the screen
-            projected_points[j].x += window_width / 2;
-            projected_points[j].y += window_height / 2;
+            // Scale into the view
+            projected_points[j].x *= (window_width / 2.0);
+            projected_points[j].y *= (window_height / 2.0);
+
+            // Translate the projected points to the middle of the screen
+            projected_points[j].x += (window_width / 2.0);
+            projected_points[j].y += (window_height / 2.0);
         }
 
         // calculate the average depth for each face based on the vertices after transformation
