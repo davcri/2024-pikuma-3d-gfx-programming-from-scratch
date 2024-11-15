@@ -54,7 +54,8 @@ void setup(void)
         framebuffer_width, framebuffer_height);
 
     // load_cube_mesh_data();
-    load_obj_file_data("./assets/suzanne.obj");
+    load_obj_file_data("./assets/f22.obj");
+    // load_obj_file_data("./assets/suzanne.obj");
     // load_obj_file_data("./assets/cube.obj");
 
     float fov = M_PI / 3.0; // radians
