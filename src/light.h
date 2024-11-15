@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include "display.h"
 
-typedef struct
+typedef struct Light
 {
     vec3_t direction;
 } light_t;

@@ -8,14 +8,6 @@
 #include "matrix.h"
 #include "light.h"
 
-// unused currently
-typedef struct
-{
-    vec3_t position;
-    vec3_t rotation; // this should be a quaternion, but for simplicity it will be an xyz Euler
-    float fov;
-} camera_t;
-
 triangle_t *triangles_to_render = NULL;
 
 bool is_running = false;
@@ -201,6 +193,9 @@ void update(void)
             // Scale into the view
             projected_points[j].x *= (window_width / 2.0);
             projected_points[j].y *= (window_height / 2.0);
+
+            // Flip Y to account for inverted screen space / model y coordinates
+            projected_points[j].y *= -1;
 
             // Translate the projected points to the middle of the screen
             projected_points[j].x += (window_width / 2.0);
