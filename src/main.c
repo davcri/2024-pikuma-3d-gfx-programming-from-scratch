@@ -6,6 +6,7 @@
 #include "vector.h"
 #include "mesh.h"
 #include "matrix.h"
+#include "light.h"
 
 // unused currently
 typedef struct
@@ -28,8 +29,7 @@ void sort_by_avg_depth(triangle_t *tris, int n)
     // bubble sort
     for (int i = 0; i < n; i++)
     {
-        bool swapped = false;
-
+        // bool swapped = false;
         for (int j = i; j < n; j++)
         {
             if (tris[i].avg_depth < tris[j].avg_depth)
@@ -37,8 +37,7 @@ void sort_by_avg_depth(triangle_t *tris, int n)
                 triangle_t tmp = tris[i];
                 tris[i] = tris[j];
                 tris[j] = tmp;
-
-                swapped = true;
+                // swapped = true;
             }
         }
     }
@@ -54,7 +53,8 @@ void setup(void)
         renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING,
         framebuffer_width, framebuffer_height);
 
-    load_cube_mesh_data();
+    // load_cube_mesh_data();
+    load_obj_file_data("./assets/suzanne.obj");
     // load_obj_file_data("./assets/cube.obj");
 
     float fov = M_PI / 3.0; // radians
@@ -107,7 +107,7 @@ void update(void)
         SDL_Delay(time_to_wait);
     }
 
-    float delta = SDL_GetTicks() - previous_frame_time;
+    // float delta = SDL_GetTicks() - previous_frame_time;
     previous_frame_time = SDL_GetTicks();
 
     triangles_to_render = NULL;
@@ -160,28 +160,28 @@ void update(void)
             transformed_vertices[j] = transformed_vertex;
         }
 
+        // prepare data for back-face culling
+        vec3_t vec_a = vec3_from_vec4(transformed_vertices[0]);
+        vec3_t vec_b = vec3_from_vec4(transformed_vertices[1]);
+        vec3_t vec_c = vec3_from_vec4(transformed_vertices[2]);
+
+        vec3_t vec_ab = vec3_sub(vec_b, vec_a); // b - a
+        vec3_t vec_ac = vec3_sub(vec_c, vec_a); // c - a
+
+        vec3_normalize(&vec_ab);
+        vec3_normalize(&vec_ac);
+
+        // compute the face normal
+        vec3_t face_normal = vec3_cross(vec_ab, vec_ac);
+        vec3_normalize(&face_normal);
+
+        vec3_t camera_ray = vec3_sub(camera_position, vec_a); //
+
+        // calculate how aligned camera ray and face normale are
+        float dot_normal_camera = vec3_dot(face_normal, camera_ray);
+
         if (cull_method == CULL_BACKFACE)
         {
-            // prepare data for back-face culling
-            vec3_t vec_a = vec3_from_vec4(transformed_vertices[0]);
-            vec3_t vec_b = vec3_from_vec4(transformed_vertices[1]);
-            vec3_t vec_c = vec3_from_vec4(transformed_vertices[2]);
-
-            vec3_t vec_ab = vec3_sub(vec_b, vec_a); // b - a
-            vec3_t vec_ac = vec3_sub(vec_c, vec_a); // c - a
-
-            vec3_normalize(&vec_ab);
-            vec3_normalize(&vec_ac);
-
-            // compute the face normal
-            vec3_t face_normal = vec3_cross(vec_ab, vec_ac);
-            vec3_normalize(&face_normal);
-
-            vec3_t camera_ray = vec3_sub(camera_position, vec_a); //
-
-            // calculate how aligned camera ray and face normale are
-            float dot_normal_camera = vec3_dot(face_normal, camera_ray);
-
             // perform back-face culling
             if (dot_normal_camera < 0)
             {
@@ -209,14 +209,19 @@ void update(void)
         // calculate the average depth for each face based on the vertices after transformation
         float avg_depth = (transformed_vertices[0].z + transformed_vertices[1].z + transformed_vertices[2].z) / 3;
 
+        // Shade face
+        float light_intensity_factor = -vec3_dot(face_normal, light.direction);
+        uint32_t triangle_color = light_apply_intensity(mesh_face.color, light_intensity_factor);
+
         triangle_t projected_triangle = {
             .points = {
                 {projected_points[0].x, projected_points[0].y},
                 {projected_points[1].x, projected_points[1].y},
                 {projected_points[2].x, projected_points[2].y},
             },
-            .color = mesh_face.color,
+            .color = triangle_color,
             .avg_depth = avg_depth};
+
         array_push(triangles_to_render, projected_triangle);
     }
 
@@ -229,7 +234,6 @@ void render(void)
     // draw_grid(0xff888888);
 
     // render all projected points
-    Color_ui32 col = 0xffff0000;
     int tris_count = array_length(triangles_to_render);
     for (int i = 0; i < tris_count; i++)
     {
