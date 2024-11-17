@@ -20,9 +20,12 @@ enum render_method
     RENDER_WIRE_VERTEX,
     RENDER_FILL_TRIANGLE,
     RENDER_FILL_TRIANGLE_WIRE,
+    RENDER_TEXTURED,
+    RENDER_TEXTURED_WIRE
 } render_method;
 
 typedef uint32_t Color_ui32;
+typedef uint8_t Color_ui8;
 
 extern SDL_Window *window; // https://stackoverflow.com/questions/496448/how-to-correctly-use-the-extern-keyword-in-c
 extern SDL_Renderer *renderer;

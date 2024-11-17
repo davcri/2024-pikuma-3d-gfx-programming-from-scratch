@@ -1,11 +1,27 @@
 #include "triangle.h"
 #include "display.h"
+#include "swap.h"
 
-void swap_int(int *a, int *b)
+Color_ui32 uv_to_color(float u, float v)
 {
-    int tmp = *a;
-    *a = *b;
-    *b = tmp;
+    // Clamp UV values to the range [0, 1] to avoid overflow or underflow
+    if (u < 0)
+        u = 0;
+    if (u > 1)
+        u = 1;
+    if (v < 0)
+        v = 0;
+    if (v > 1)
+        v = 1;
+
+    // Convert UV values to RGB components
+    Color_ui8 red = (Color_ui8)(u * 255);   // U -> Red
+    Color_ui8 green = (Color_ui8)(v * 255); // V -> Green
+    Color_ui8 blue = 0;                     // Optional, set to a constant
+    Color_ui8 alpha_channel = 255;          // Fully opaque
+
+    // Pack components into AARRGGBB format
+    return (alpha_channel << 24) | (red << 16) | (green << 8) | blue;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -73,6 +89,85 @@ void draw_filled_triangle(int x0, int y0, int x1, int y1, int x2, int y2, Color_
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Return the barycentric weights alpha, beta, and gamma for point p
+///////////////////////////////////////////////////////////////////////////////
+//
+//         (B)
+//         /|\
+//        / | \
+//       /  |  \
+//      /  (P)  \
+//     /  /   \  \
+//    / /       \ \
+//   //           \\
+//  (A)------------(C)
+//
+///////////////////////////////////////////////////////////////////////////////
+vec3_t barycentric_weights(vec2_t a, vec2_t b, vec2_t c, vec2_t p)
+{
+    // Find the vectors between the vertices ABC and point p
+    vec2_t ac = vec2_sub(c, a);
+    vec2_t ab = vec2_sub(b, a);
+    vec2_t ap = vec2_sub(p, a);
+    vec2_t pc = vec2_sub(c, p);
+    vec2_t pb = vec2_sub(b, p);
+
+    // Compute the area of the full parallelogram/triangle ABC using 2D cross product
+    float area_parallelogram_abc = (ac.x * ab.y - ac.y * ab.x); // || AC x AB ||
+
+    // Alpha is the area of the small parallelogram/triangle PBC divided by the area of the full parallelogram/triangle ABC
+    float alpha = (pc.x * pb.y - pc.y * pb.x) / area_parallelogram_abc;
+
+    // Beta is the area of the small parallelogram/triangle APC divided by the area of the full parallelogram/triangle ABC
+    float beta = (ac.x * ap.y - ac.y * ap.x) / area_parallelogram_abc;
+
+    // Weight gamma is easily found since barycentric coordinates always add up to 1.0
+    float gamma = 1 - alpha - beta;
+
+    vec3_t weights = {alpha, beta, gamma};
+    return weights;
+}
+
+const bool DEBUG_UV = false;
+
+// Draw textured pixel at position xy
+void draw_texel(int x, int y, Color_ui32 *texture,
+                vec2_t point_a, vec2_t point_b, vec2_t point_c,
+                float u0, float v0, float u1, float v1, float u2, float v2)
+{
+    vec2_t point_p = {x, y};
+    vec3_t weights = barycentric_weights(point_a, point_b, point_c, point_p);
+
+    float alpha = weights.x;
+    float beta = weights.y;
+    float gamma = weights.z;
+
+    // Perform interpolation of U and V values using barycentric weights
+    float interpolated_u = (u0)*alpha + (u1)*beta + (u2)*gamma;
+    float interpolated_v = (v0)*alpha + (v1)*beta + (v2)*gamma;
+
+    // Map UV coordinate to the full texture width and height
+    int tex_x = abs((int)(interpolated_u * texture_width));
+    int tex_y = abs((int)(interpolated_v * texture_height));
+
+    if (DEBUG_UV)
+    {
+        // Pack color into AARRGGBB format
+        Color_ui32 uv_color = uv_to_color(interpolated_u, interpolated_v);
+        draw_pixel(x, y, uv_color);
+        return;
+    }
+    else
+    {
+        // Fetch texel color
+        Color_ui32 texel_color = texture[texture_width * tex_y + tex_x];
+
+        // Draw texel to frame buffer
+        draw_pixel(x, y, texel_color);
+    }
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // Draw a filled a triangle with a flat bottom
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -130,3 +225,118 @@ void fill_flat_top_triangle(int x0, int y0, int x1, int y1, int x2, int y2, Colo
         x_end -= slope_inv2;
     }
 };
+
+///////////////////////////////////////////////////////////////////////////////
+// Draw a textured triangle based on a texture array of colors.
+// We split the original triangle in two, half flat-bottom and half flat-top.
+///////////////////////////////////////////////////////////////////////////////
+//
+//        v0
+//        /\
+//       /  \
+//      /    \
+//     /      \
+//   v1--------v3
+//     \_       \
+//        \_     \
+//           \_   \
+//              \_ \
+//                 \\
+//                   \
+//                    v2
+//
+///////////////////////////////////////////////////////////////////////////////
+void draw_textured_triangle(
+    int x0, int y0, float u0, float v0,
+    int x1, int y1, float u1, float v1,
+    int x2, int y2, float u2, float v2, Color_ui32 *texture)
+{
+    // Sort the vertices by the y-coordinate ascending (y0 < y1 < y2)
+    if (y0 > y1)
+    {
+        // swap so that y0 < y1
+        swap_int(&y0, &y1);
+        swap_int(&x0, &x1);
+        swap_float(&u0, &u1);
+        swap_float(&v0, &v1);
+    }
+    if (y1 > y2)
+    {
+        swap_int(&y1, &y2);
+        swap_int(&x1, &x2);
+        swap_float(&u1, &u2);
+        swap_float(&v1, &v2);
+    }
+    if (y0 > y1)
+    {
+        swap_int(&y0, &y1);
+        swap_int(&x0, &x1);
+        swap_float(&u0, &u1);
+        swap_float(&v0, &v1);
+    }
+
+    // Create vector points after sorting the vertices
+    vec2_t point_a = {x0, y0};
+    vec2_t point_b = {x1, y1};
+    vec2_t point_c = {x2, y2};
+
+    // Render the upper part of the triangle (flat-bottom)
+    float inv_slope_1 = 0.;
+    float inv_slope_2 = 0.;
+
+    if (y1 - y0 != 0)
+        inv_slope_1 = (float)(x1 - x0) / (y1 - y0);
+
+    if (y2 - y0 != 0)
+        inv_slope_2 = (float)(x2 - x0) / (y2 - y0);
+
+    if (y1 - y0 != 0)
+    {
+        for (int y = y0; y < y1; y++)
+        {
+            int x_start = x1 + (y - y1) * inv_slope_1;
+            int x_end = x0 + (y - y0) * inv_slope_2;
+
+            if (x_end < x_start)
+            {
+                swap_int(&x_end, &x_start); // Swap if x_start is to the right of x_end
+            }
+
+            for (int x = x_start; x < x_end; x++)
+            {
+                // Draw pixel from the color from the texture
+                draw_texel(x, y, texture, point_a, point_b, point_c, u0, v0, u1, v1, u2, v2);
+            }
+        }
+    }
+
+    // Render the bottom part of the triangle
+    inv_slope_1 = 0.;
+    inv_slope_2 = 0.;
+
+    if (y2 - y1 != 0)
+        inv_slope_1 = (float)(x2 - x1) / (y2 - y1);
+
+    if (y2 - y0 != 0)
+        inv_slope_2 = (float)(x2 - x0) / (y2 - y0);
+
+    if (y2 - y1 != 0)
+    {
+        for (int y = y1; y < y2; y++)
+        {
+            int x_start = x1 + (y - y1) * inv_slope_1;
+            int x_end = x0 + (y - y0) * inv_slope_2;
+
+            if (x_end < x_start)
+            {
+                swap_int(&x_end, &x_start); // Swap if x_start is to the right of x_end
+            }
+
+            for (int x = x_start; x < x_end; x++)
+            {
+                // Draw pixel from the color from the texture
+                draw_texel(x, y, texture, point_a, point_b, point_c, u0, v0, u1, v1, u2, v2);
+            }
+        }
+    }
+}

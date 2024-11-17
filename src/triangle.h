@@ -4,18 +4,23 @@
 #include <stdint.h>
 #include "vector.h"
 #include "display.h"
+#include "texture.h"
 
 typedef struct
 {
     int a;
     int b;
     int c;
+    tex2_t a_uv;
+    tex2_t b_uv;
+    tex2_t c_uv;
     Color_ui32 color;
 } face_t;
 
 typedef struct
 {
     vec2_t points[3];
+    tex2_t texcoords[3];
     Color_ui32 color;
     float avg_depth;
 } triangle_t;
@@ -23,5 +28,10 @@ typedef struct
 void draw_filled_triangle(int x0, int y0, int x1, int y1, int x2, int y2, Color_ui32 color);
 void fill_flat_bottom_triangle(int x0, int y0, int x1, int y1, int x2, int y2, Color_ui32 color);
 void fill_flat_top_triangle(int x0, int y0, int x1, int y1, int x2, int y2, Color_ui32 color);
+void draw_texel(int x, int y, Color_ui32 *texture, vec2_t point_a, vec2_t point_b, vec2_t pointc, float u0, float v0, float u1, float v1, float u2, float v2);
+void draw_textured_triangle(
+    int x0, int y0, float u0, float v0,
+    int x1, int y1, float u1, float v1,
+    int x2, int y2, float u2, float v2, Color_ui32 *texture);
 
 #endif // TRIANGLE_H

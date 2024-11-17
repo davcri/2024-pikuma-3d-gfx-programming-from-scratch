@@ -1,20 +1,20 @@
 #if !defined(VECTOR2_H)
 #define VECTOR2_H
 
-typedef struct
+typedef struct Vector2
 {
     float x;
     float y;
 } vec2_t;
 
-typedef struct
+typedef struct Vector3
 {
     float x;
     float y;
     float z;
 } vec3_t;
 
-typedef struct
+typedef struct Vector4
 {
     float x, y, z, w;
 } vec4_t;
