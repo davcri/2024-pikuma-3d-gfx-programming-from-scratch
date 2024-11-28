@@ -19,7 +19,7 @@ typedef struct
 
 typedef struct
 {
-    vec2_t points[3];
+    vec4_t points[3];
     tex2_t texcoords[3];
     Color_ui32 color;
     float avg_depth;
@@ -28,10 +28,12 @@ typedef struct
 void draw_filled_triangle(int x0, int y0, int x1, int y1, int x2, int y2, Color_ui32 color);
 void fill_flat_bottom_triangle(int x0, int y0, int x1, int y1, int x2, int y2, Color_ui32 color);
 void fill_flat_top_triangle(int x0, int y0, int x1, int y1, int x2, int y2, Color_ui32 color);
-void draw_texel(int x, int y, Color_ui32 *texture, vec2_t point_a, vec2_t point_b, vec2_t pointc, float u0, float v0, float u1, float v1, float u2, float v2);
-void draw_textured_triangle(
-    int x0, int y0, float u0, float v0,
-    int x1, int y1, float u1, float v1,
-    int x2, int y2, float u2, float v2, Color_ui32 *texture);
+void draw_texel(int x, int y, Color_ui32 *texture,
+                vec4_t point_a, vec4_t point_b, vec4_t point_c,
+                tex2_t a_uv, tex2_t b_uv, tex2_t c_uv);
+void draw_textured_triangle(int x0, int y0, float z0, float w0, float u0, float v0,
+                            int x1, int y1, float z1, float w1, float u1, float v1,
+                            int x2, int y2, float z2, float w2, float u2, float v2,
+                            Color_ui32 *texture);
 
 #endif // TRIANGLE_H
