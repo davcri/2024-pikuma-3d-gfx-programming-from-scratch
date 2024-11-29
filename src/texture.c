@@ -6,6 +6,17 @@ int texture_height = 64;
 
 Color_ui32 *mesh_texture = NULL;
 
+// rgba in [0, 255] range
+uint32_t createColorRGBA(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+{
+    return ((uint32_t)r << 24) | ((uint32_t)g << 16) | ((uint32_t)b << 8) | (uint32_t)a;
+}
+
+// rgba in [0, 255] range
+uint32_t createColorARGB(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+{
+    return ((uint32_t)a << 24) | ((uint32_t)r << 16) | ((uint32_t)g << 8) | (uint32_t)b;
+}
 void load_png_texture_data(char *filename)
 {
 
@@ -105,7 +116,7 @@ void load_png_texture_data(char *filename)
         for (int x = 0; x < width; x++)
         {
             png_bytep px = &row[x * 4];                                              // RGBA: 4 bytes per pixel
-            Color_ui32 color = (px[3] << 24) | (px[0] << 16) | (px[1] << 8) | px[2]; // 0xAARRGGBB
+            Color_ui32 color = (px[0] << 24) | (px[1] << 16) | (px[2] << 8) | px[3]; // 0xRRGGBBAA
             mesh_texture[y * width + x] = color;
         }
         free(row);

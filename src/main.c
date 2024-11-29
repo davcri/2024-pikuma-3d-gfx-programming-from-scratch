@@ -44,7 +44,7 @@ void setup(void)
 
     color_buffer = (Color_ui32 *)malloc(sizeof(Color_ui32) * framebuffer_width * framebuffer_height);
     color_buffer_texture = SDL_CreateTexture(
-        renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING,
+        renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING,
         framebuffer_width, framebuffer_height);
 
     // Load a model
@@ -296,7 +296,7 @@ void render(void)
 
     render_color_buffer();
 
-    clear_color_buffer(0xff000000);
+    clear_color_buffer(0x000000ff);
 
     SDL_RenderPresent(renderer);
 }
