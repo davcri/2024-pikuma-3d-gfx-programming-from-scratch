@@ -28,6 +28,7 @@ https://code.visualstudio.com/docs/cpp/launch-json-reference
 "C_Cpp.default.includePath": [
   "${default}",
   "/opt/homebrew/lib",
+  "/opt/homebrew/include",
   "/opt/homebrew/include/SDL2",
   "${workspaceRoot}"
 ]

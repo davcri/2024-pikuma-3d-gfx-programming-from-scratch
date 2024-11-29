@@ -107,7 +107,6 @@ void load_png_texture_data(char *filename)
             png_bytep px = &row[x * 4];                                              // RGBA: 4 bytes per pixel
             Color_ui32 color = (px[3] << 24) | (px[0] << 16) | (px[1] << 8) | px[2]; // 0xAARRGGBB
             mesh_texture[y * width + x] = color;
-            printf("Loading %d into mesh_texture\n", color);
         }
         free(row);
     }
