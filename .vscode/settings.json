@@ -28,6 +28,8 @@
     "vector.h": "c",
     "array": "c",
     "triangle.h": "c",
-    "array.h": "c"
+    "array.h": "c",
+    "stdbool.h": "c",
+    "texture.h": "c"
   }
 }

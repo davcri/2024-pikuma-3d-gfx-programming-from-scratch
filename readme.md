@@ -12,6 +12,7 @@ make build && make run
 
 ```sh
 brew install sdl2
+brew install libpng
 ```
 
 ## Debugging

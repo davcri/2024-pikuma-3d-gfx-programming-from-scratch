@@ -1,6 +1,7 @@
 #if !defined(TEXTURE_H)
 #define TEXTURE_H
 
+#include <png.h>
 #include "display.h"
 
 typedef struct TextureCoordinates
@@ -12,8 +13,9 @@ typedef struct TextureCoordinates
 extern int texture_width;
 extern int texture_height;
 
-extern const Color_ui8 REDBRICK_TEXTURE[];
-
+// extern upng_t *png_texture;
 extern Color_ui32 *mesh_texture;
+
+void load_png_texture_data(char *filename);
 
 #endif // TEXTURE_H

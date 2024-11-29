@@ -150,7 +150,6 @@ void draw_texel(int x, int y, Color_ui32 *texture,
     // Variables to store the interpolated values of U, V, and also w for the current panel
     float interpolated_u;
     float interpolated_v;
-    float interpolated_w;
     float interpolate_reciprocal_w;
 
     // Perform interpolation of U and V values using barycentric weights

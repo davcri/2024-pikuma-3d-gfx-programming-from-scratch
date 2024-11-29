@@ -47,16 +47,14 @@ void setup(void)
         renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING,
         framebuffer_width, framebuffer_height);
 
-    // Load the texture data
-    mesh_texture = (Color_ui32 *)REDBRICK_TEXTURE;
-    texture_width = 64;
-    texture_height = 64;
-
     // Load a model
     load_cube_mesh_data();
     // load_obj_file_data("./assets/f22.obj");
     // load_obj_file_data("./assets/suzanne.obj");
     // load_obj_file_data("./assets/cube.obj");
+
+    // Load the texture data
+    load_png_texture_data("./assets/cube.png");
 
     float fov = M_PI / 3.0; // radians
     float ar = (float)window_height / (float)window_width;
@@ -118,9 +116,9 @@ void update(void)
     triangles_to_render = NULL;
 
     // Change the mesh scale/rotation values per frame
-    mesh.rotation.y += 0.01;
-    mesh.rotation.x += 0.01;
-    mesh.rotation.z += 0.01;
+    // mesh.rotation.y += 0.01;
+    // mesh.rotation.x += 0.01;
+    // mesh.rotation.z += 0.01;
     // mesh.scale.x += 0.002;
     // mesh.scale.y += 0.001;
     // mesh.translation.x += 0.01;
