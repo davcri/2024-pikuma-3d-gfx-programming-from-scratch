@@ -39,7 +39,7 @@ void sort_by_avg_depth(triangle_t *tris, int n)
 
 void setup(void)
 {
-    render_method = RENDER_WIRE_VERTEX;
+    render_method = RENDER_TEXTURED_WIRE;
     cull_method = CULL_BACKFACE;
 
     color_buffer = (Color_ui32 *)malloc(sizeof(Color_ui32) * framebuffer_width * framebuffer_height);
@@ -116,9 +116,9 @@ void update(void)
     triangles_to_render = NULL;
 
     // Change the mesh scale/rotation values per frame
-    // mesh.rotation.y += 0.01;
-    // mesh.rotation.x += 0.01;
-    // mesh.rotation.z += 0.01;
+    mesh.rotation.x += 0.004;
+    mesh.rotation.y += 0.004;
+    mesh.rotation.z += 0.004;
     // mesh.scale.x += 0.002;
     // mesh.scale.y += 0.001;
     // mesh.translation.x += 0.01;
