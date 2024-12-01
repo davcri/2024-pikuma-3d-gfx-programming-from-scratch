@@ -17,25 +17,6 @@ int previous_frame_time = 0;
 vec3_t camera_position = {0., 0., 0.};
 mat4_t proj_matrix;
 
-void sort_by_avg_depth(triangle_t *tris, int n)
-{
-    // bubble sort
-    for (int i = 0; i < n; i++)
-    {
-        // bool swapped = false;
-        for (int j = i; j < n; j++)
-        {
-            if (tris[i].avg_depth < tris[j].avg_depth)
-            {
-                triangle_t tmp = tris[i];
-                tris[i] = tris[j];
-                tris[j] = tmp;
-                // swapped = true;
-            }
-        }
-    }
-}
-
 void setup(void)
 {
     render_method = RENDER_TEXTURED_WIRE;
@@ -212,9 +193,6 @@ void update(void)
             projected_points[j].y += (window_height / 2.0);
         }
 
-        // calculate the average depth for each face based on the vertices after transformation
-        float avg_depth = (transformed_vertices[0].z + transformed_vertices[1].z + transformed_vertices[2].z) / 3;
-
         // Shade face
         float light_intensity_factor = -vec3_dot(face_normal, light.direction);
         uint32_t triangle_color = light_apply_intensity(mesh_face.color, light_intensity_factor);
@@ -231,13 +209,10 @@ void update(void)
                 {mesh_face.c_uv.u, mesh_face.c_uv.v},
             },
             .color = triangle_color,
-            .avg_depth = avg_depth};
+        };
 
         array_push(triangles_to_render, projected_triangle);
     }
-
-    // sort triangles by avg depth
-    sort_by_avg_depth(triangles_to_render, array_length(triangles_to_render));
 }
 
 void render(void)
