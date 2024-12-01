@@ -116,8 +116,8 @@ void load_png_texture_data(char *filename)
         for (int x = 0; x < width; x++)
         {
             png_bytep px = &row[x * 4];                                              // RGBA: 4 bytes per pixel
-            Color_ui32 color = (px[0] << 24) | (px[1] << 16) | (px[2] << 8) | px[3]; // 0xRRGGBBAA
-            mesh_texture[y * width + x] = color;
+            Color_ui32 color = (px[3] << 24) | (px[2] << 16) | (px[1] << 8) | px[0]; // 0xAABBGGRR
+            // Color_ui32 color = (px[0] << 24) | (px[1] << 16) | (px[2] << 8) | px[3]; // 0xRRGGBBAA
         }
         free(row);
     }
