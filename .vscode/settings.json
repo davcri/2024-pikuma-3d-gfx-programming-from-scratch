@@ -30,6 +30,8 @@
     "triangle.h": "c",
     "array.h": "c",
     "stdbool.h": "c",
-    "texture.h": "c"
+    "texture.h": "c",
+    "camera.h": "c",
+    "matrix.h": "c"
   }
 }
