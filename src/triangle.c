@@ -164,8 +164,8 @@ void draw_texel(int x, int y, Color_ui32 *texture,
     interpolated_v /= interpolate_reciprocal_w;
 
     // Map UV coordinate to the full texture width and height
-    int tex_x = abs((int)(interpolated_u * texture_width));
-    int tex_y = abs((int)(interpolated_v * texture_height));
+    int tex_x = abs((int)(interpolated_u * texture_width)) % texture_width;
+    int tex_y = abs((int)(interpolated_v * texture_height)) % texture_height;
 
     if (DEBUG_UV)
     {
