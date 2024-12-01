@@ -12,6 +12,7 @@ const int window_height = 600;
 int framebuffer_width = window_width;
 int framebuffer_height = window_height;
 Color_ui32 *color_buffer = NULL;
+float *z_buffer = NULL;
 SDL_Texture *color_buffer_texture = NULL;
 
 bool initialize_window(void)
@@ -131,6 +132,17 @@ void clear_color_buffer(uint32_t color)
         for (int x = 0; x < framebuffer_width; x++)
         {
             color_buffer[framebuffer_width * y + x] = color;
+        }
+    }
+}
+
+void clear_z_buffer(void)
+{
+    for (int y = 0; y < framebuffer_height; y++)
+    {
+        for (int x = 0; x < framebuffer_width; x++)
+        {
+            z_buffer[framebuffer_width * y + x] = 1.;
         }
     }
 }

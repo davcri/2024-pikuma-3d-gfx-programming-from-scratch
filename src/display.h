@@ -34,6 +34,7 @@ extern const int window_height;
 extern int framebuffer_width;
 extern int framebuffer_height;
 extern Color_ui32 *color_buffer;
+extern float *z_buffer;
 extern SDL_Texture *color_buffer_texture;
 
 bool initialize_window(void);
@@ -44,6 +45,7 @@ void draw_line(int x0, int y0, int x1, int y1, Color_ui32 color);
 void draw_triangle(int x0, int y0, int x1, int y1, int x2, int y2, Color_ui32 color);
 void render_color_buffer(void);
 void clear_color_buffer(Color_ui32 color);
+void clear_z_buffer(void);
 void destroy_window(void);
 
 // utils

@@ -13,9 +13,8 @@
 triangle_t *triangles_to_render = NULL;
 
 bool is_running = false;
-int previous_frame_time;
-
-vec3_t camera_position = {0., 0., 0};
+int previous_frame_time = 0;
+vec3_t camera_position = {0., 0., 0.};
 mat4_t proj_matrix;
 
 void sort_by_avg_depth(triangle_t *tris, int n)
@@ -46,15 +45,16 @@ void setup(void)
     color_buffer_texture = SDL_CreateTexture(
         renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING,
         framebuffer_width, framebuffer_height);
+    z_buffer = (float *)malloc(sizeof(float) * window_width * window_height);
 
     // Load a model
     // load_cube_mesh_data();
     // load_obj_file_data("./assets/f22.obj");
     // load_obj_file_data("./assets/suzanne.obj");
-    load_obj_file_data("./assets/cube.obj");
+    load_obj_file_data("./assets/f22.obj");
 
     // Load the texture data
-    load_png_texture_data("./assets/cube.png");
+    load_png_texture_data("./assets/f22.png");
 
     float fov = M_PI / 3.0; // radians
     float ar = (float)window_height / (float)window_width;
@@ -297,6 +297,7 @@ void render(void)
     render_color_buffer();
 
     clear_color_buffer(0x000000ff);
+    clear_z_buffer();
 
     SDL_RenderPresent(renderer);
 }
@@ -304,6 +305,7 @@ void render(void)
 void free_resources()
 {
     free(color_buffer);
+    array_free(z_buffer);
     array_free(mesh.faces);
     array_free(mesh.vertices);
 }

@@ -150,37 +150,46 @@ void draw_texel(int x, int y, Color_ui32 *texture,
     // Variables to store the interpolated values of U, V, and also w for the current panel
     float interpolated_u;
     float interpolated_v;
-    float interpolate_reciprocal_w;
+    float interpolated_reciprocal_w;
 
     // Perform interpolation of U and V values using barycentric weights
     interpolated_u = (a_uv.u / point_a.w) * alpha + (b_uv.u / point_b.w) * beta + (c_uv.u / point_c.w) * gamma;
     interpolated_v = (a_uv.v / point_a.w) * alpha + (b_uv.v / point_b.w) * beta + (c_uv.v / point_c.w) * gamma;
 
     // Also interpolate the value of 1/w for the current pixel
-    interpolate_reciprocal_w = (1 / point_a.w) * alpha + (1 / point_b.w) * beta + (1 / point_c.w) * gamma;
+    interpolated_reciprocal_w = (1 / point_a.w) * alpha + (1 / point_b.w) * beta + (1 / point_c.w) * gamma;
 
     // Divide back both interpolated values by 1/w
-    interpolated_u /= interpolate_reciprocal_w;
-    interpolated_v /= interpolate_reciprocal_w;
+    interpolated_u /= interpolated_reciprocal_w;
+    interpolated_v /= interpolated_reciprocal_w;
 
     // Map UV coordinate to the full texture width and height
     int tex_x = abs((int)(interpolated_u * texture_width)) % texture_width;
     int tex_y = abs((int)(interpolated_v * texture_height)) % texture_height;
 
-    if (DEBUG_UV)
-    {
-        // Pack color into AARRGGBB format
-        Color_ui32 uv_color = uv_to_color(interpolated_u, interpolated_v);
-        draw_pixel(x, y, uv_color);
-        return;
-    }
-    else
-    {
-        // Fetch texel color
-        Color_ui32 texel_color = texture[texture_width * tex_y + tex_x];
+    // adjust 1/w so that the pixels that are closer to thce camera have smaller values
+    interpolated_reciprocal_w = 1. - interpolated_reciprocal_w;
 
-        // Draw texel to frame buffer
-        draw_pixel(x, y, texel_color);
+    // Draw the pixel only if the current pixel is in front of the one previously stored in the z-buffer
+    if (interpolated_reciprocal_w < z_buffer[(framebuffer_width * y) + x])
+    {
+        if (DEBUG_UV)
+        {
+            // Pack color into AARRGGBB format
+            Color_ui32 uv_color = uv_to_color(interpolated_u, interpolated_v);
+            draw_pixel(x, y, uv_color);
+        }
+        else
+        {
+            // Fetch texel color
+            Color_ui32 texel_color = texture[texture_width * tex_y + tex_x];
+
+            // Draw texel to frame buffer
+            draw_pixel(x, y, texel_color);
+        }
+
+        // Update z-buffer
+        z_buffer[(framebuffer_width * y) + x] = interpolated_reciprocal_w;
     }
 }
 
