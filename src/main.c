@@ -21,6 +21,7 @@ int previous_frame_time = 0;
 mat4_t world_matrix;
 mat4_t proj_matrix;
 mat4_t view_matrix;
+float delta_time;
 
 void setup(void)
 {
@@ -102,7 +103,7 @@ void update(void)
 
     Uint32 updateTicks = SDL_GetTicks();
 
-    // float delta = SDL_GetTicks() - previous_frame_time;
+    delta_time = (SDL_GetTicks() - previous_frame_time) / 1000.0; // seconds
     previous_frame_time = SDL_GetTicks();
 
     // Initialize the counter of triangles to render for the current frame
@@ -110,7 +111,7 @@ void update(void)
 
     // Change the mesh scale/rotation values per frame
     // mesh.rotation.x += 0.004;
-    mesh.rotation.y += 0.008;
+    mesh.rotation.y += 0.8 * delta_time;
     // mesh.rotation.z += 0.004;
     // mesh.scale.x += 0.002;
     // mesh.scale.y += 0.001;
