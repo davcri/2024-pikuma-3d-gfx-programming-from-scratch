@@ -37,10 +37,10 @@ void setup(void)
     // load_cube_mesh_data();
     // load_obj_file_data("./assets/f22.obj");
     // load_obj_file_data("./assets/suzanne.obj");
-    load_obj_file_data("./assets/efa.obj");
+    load_obj_file_data("./assets/f22.obj");
 
     // Load the texture data
-    load_png_texture_data("./assets/efa.png");
+    load_png_texture_data("./assets/f22.png");
 
     float fov = M_PI / 3.0; // radians
     float ar = (float)window_height / (float)window_width;
