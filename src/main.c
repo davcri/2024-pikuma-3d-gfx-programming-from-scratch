@@ -10,7 +10,9 @@
 #include "light.h"
 #include "mesh.h"
 
-triangle_t *triangles_to_render = NULL;
+#define MAX_TRIANGLES_PER_MESH 10000
+triangle_t triangles_to_render[MAX_TRIANGLES_PER_MESH];
+int num_triangles_to_render = 0;
 
 bool is_running = false;
 int previous_frame_time = 0;
@@ -32,10 +34,10 @@ void setup(void)
     // load_cube_mesh_data();
     // load_obj_file_data("./assets/f22.obj");
     // load_obj_file_data("./assets/suzanne.obj");
-    load_obj_file_data("./assets/f22.obj");
+    load_obj_file_data("./assets/drone.obj");
 
     // Load the texture data
-    load_png_texture_data("./assets/f22.png");
+    load_png_texture_data("./assets/drone.png");
 
     float fov = M_PI / 3.0; // radians
     float ar = (float)window_height / (float)window_width;
@@ -95,10 +97,13 @@ void update(void)
         SDL_Delay(time_to_wait);
     }
 
+    Uint32 updateTicks = SDL_GetTicks();
+
     // float delta = SDL_GetTicks() - previous_frame_time;
     previous_frame_time = SDL_GetTicks();
 
-    triangles_to_render = NULL;
+    // Initialize the counter of triangles to render for the current frame
+    num_triangles_to_render = 0;
 
     // Change the mesh scale/rotation values per frame
     // mesh.rotation.x += 0.004;
@@ -215,8 +220,14 @@ void update(void)
             .color = triangle_color,
         };
 
-        array_push(triangles_to_render, projected_triangle);
+        if (num_triangles_to_render < MAX_TRIANGLES_PER_MESH)
+        {
+            triangles_to_render[num_triangles_to_render] = projected_triangle;
+            num_triangles_to_render++;
+        }
     }
+
+    printf("update(): took %dms\n", SDL_GetTicks() - updateTicks);
 }
 
 void render(void)
@@ -224,8 +235,7 @@ void render(void)
     // draw_grid(0xff888888);
 
     // render all projected points
-    int tris_count = array_length(triangles_to_render);
-    for (int i = 0; i < tris_count; i++)
+    for (int i = 0; i < num_triangles_to_render; i++)
     {
         triangle_t triangle = triangles_to_render[i];
         if (render_method == RENDER_FILL_TRIANGLE || render_method == RENDER_FILL_TRIANGLE_WIRE)
@@ -279,7 +289,6 @@ void render(void)
             draw_rectangle(triangle.points[2].x - 3, triangle.points[2].y - 3, 6, 6, 0xffffaaff);
         }
     }
-    array_free(triangles_to_render);
 
     render_color_buffer();
 
