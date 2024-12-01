@@ -16,8 +16,8 @@ enum cull_method
 
 enum render_method
 {
-    RENDER_WIRE,
     RENDER_WIRE_VERTEX,
+    RENDER_WIRE,
     RENDER_FILL_TRIANGLE,
     RENDER_FILL_TRIANGLE_WIRE,
     RENDER_TEXTURED,

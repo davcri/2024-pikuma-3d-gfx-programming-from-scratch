@@ -73,6 +73,10 @@ void process_input(void)
             cull_method = CULL_BACKFACE;
         if (event.key.keysym.sym == SDLK_d)
             cull_method = CULL_NONE;
+
+        printf("Render method: %d\n", render_method);
+        printf("Cull: %d\n", cull_method);
+
         break;
 
     default:
@@ -227,12 +231,22 @@ void render(void)
         if (render_method == RENDER_FILL_TRIANGLE || render_method == RENDER_FILL_TRIANGLE_WIRE)
         {
             draw_filled_triangle(
+                // vertex A
                 triangle.points[0].x,
                 triangle.points[0].y,
+                triangle.points[0].z,
+                triangle.points[0].w,
+                // vertex B
                 triangle.points[1].x,
                 triangle.points[1].y,
+                triangle.points[1].z,
+                triangle.points[1].w,
+                // vertex C
                 triangle.points[2].x,
-                triangle.points[2].y, triangle.color);
+                triangle.points[2].y,
+                triangle.points[2].z,
+                triangle.points[2].w,
+                triangle.color);
         }
 
         // Draw textured triangle
@@ -266,8 +280,6 @@ void render(void)
         }
     }
     array_free(triangles_to_render);
-
-    // draw_filled_triangle(300, 100, 50, 400, 500, 700, col);
 
     render_color_buffer();
 
