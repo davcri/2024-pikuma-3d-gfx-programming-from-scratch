@@ -19,12 +19,12 @@ mat4_t proj_matrix;
 
 void setup(void)
 {
-    render_method = RENDER_TEXTURED_WIRE;
+    render_method = RENDER_FILL_TRIANGLE;
     cull_method = CULL_BACKFACE;
 
     color_buffer = (Color_ui32 *)malloc(sizeof(Color_ui32) * framebuffer_width * framebuffer_height);
     color_buffer_texture = SDL_CreateTexture(
-        renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_STREAMING,
+        renderer, SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_STREAMING,
         framebuffer_width, framebuffer_height);
     z_buffer = (float *)malloc(sizeof(float) * window_width * window_height);
 
@@ -199,7 +199,7 @@ void update(void)
 
         // Shade face
         float light_intensity_factor = -vec3_dot(face_normal, light.direction);
-        uint32_t triangle_color = light_apply_intensity(mesh_face.color, light_intensity_factor);
+        Color_ui32 triangle_color = light_apply_intensity(mesh_face.color, light_intensity_factor);
 
         triangle_t projected_triangle = {
             .points = {
@@ -283,7 +283,7 @@ void render(void)
 
     render_color_buffer();
 
-    clear_color_buffer(0x000000ff);
+    clear_color_buffer(0x00000000);
     clear_z_buffer();
 
     SDL_RenderPresent(renderer);

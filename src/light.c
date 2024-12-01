@@ -6,17 +6,25 @@ light_t light = {
     .direction = {0, 0, 1.0},
 };
 
+/**
+ * Input color: RRGGBBAA
+ * Output color: AABBGGRR
+ *
+ * TODO: improve color management. Worth checking SDL_Color.
+ */
 Color_ui32 light_apply_intensity(Color_ui32 original_color, float percentage_factor)
 {
-    if (percentage_factor < 0)
-        percentage_factor = 0;
-    if (percentage_factor > 1)
-        percentage_factor = 1;
+    // Extract individual components from RRGGBBAA format
+    uint8_t red = (original_color >> 24) & 0xFF;
+    uint8_t green = (original_color >> 16) & 0xFF;
+    uint8_t blue = (original_color >> 8) & 0xFF;
+    uint8_t alpha = original_color & 0xFF;
 
-    uint32_t a = (original_color & 0xff000000);
-    uint32_t r = (original_color & 0x00ff0000) * percentage_factor;
-    uint32_t g = (original_color & 0x0000ff00) * percentage_factor;
-    uint32_t b = (original_color & 0x000000ff) * percentage_factor;
+    // Apply the percentage factor and clamp using SDL_clamp
+    red = SDL_clamp((int)(red * percentage_factor), 0, 255);
+    green = SDL_clamp((int)(green * percentage_factor), 0, 255);
+    blue = SDL_clamp((int)(blue * percentage_factor), 0, 255);
 
-    return a | (r & 0x00ff0000) | (g & 0x0000ff00) | (b & 0x000000ff);
+    // Reconstruct the color in AABBGGRR format
+    return (alpha << 24) | (blue << 16) | (green << 8) | red;
 }
