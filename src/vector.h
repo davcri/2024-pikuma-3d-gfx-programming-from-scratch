@@ -19,6 +19,8 @@ typedef struct Vector4
     float x, y, z, w;
 } vec4_t;
 
+vec2_t vec2_new(float x, float y);
+vec3_t vec3_new(float x, float y, float z);
 float vec2_length(vec2_t v);
 float vec3_length(vec3_t v);
 void vec2_normalize(vec2_t *v);

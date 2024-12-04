@@ -10,6 +10,7 @@
 #include "light.h"
 #include "mesh.h"
 #include "camera.h"
+#include "clipping.h"
 
 #define MAX_TRIANGLES_PER_MESH 10000
 triangle_t triangles_to_render[MAX_TRIANGLES_PER_MESH];
@@ -45,9 +46,12 @@ void setup(void)
 
     float fov = M_PI / 3.0; // radians
     float ar = (float)window_height / (float)window_width;
-    float near = 0.1;
-    float far = 100.;
-    proj_matrix = mat4_make_perspective(fov, ar, near, far);
+    float z_near = 0.1;
+    float z_far = 100.;
+    proj_matrix = mat4_make_perspective(fov, ar, z_near, z_far);
+
+    // Initialize frustum planes
+    init_frustum_planes(fov, z_near, z_far);
 }
 
 void process_input(void)

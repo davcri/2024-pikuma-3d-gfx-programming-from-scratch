@@ -1,6 +1,18 @@
 #include "vector.h"
 #include <math.h>
 
+vec2_t vec2_new(float x, float y)
+{
+    vec2_t result = {x, y};
+    return result;
+}
+
+vec3_t vec3_new(float x, float y, float z)
+{
+    vec3_t result = {x, y, z};
+    return result;
+}
+
 float vec2_length(vec2_t v)
 {
     return sqrt(v.x * v.x + v.y * v.y);
