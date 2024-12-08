@@ -39,10 +39,11 @@ void setup(void)
     // load_cube_mesh_data();
     // load_obj_file_data("./assets/f22.obj");
     // load_obj_file_data("./assets/suzanne.obj");
-    load_obj_file_data("./assets/f22.obj");
+    // load_obj_file_data("./assets/f22.obj");
+    load_obj_file_data("./assets/cube.obj");
 
     // Load the texture data
-    load_png_texture_data("./assets/f22.png");
+    load_png_texture_data("./assets/cube.png");
 
     float fov = M_PI / 3.0; // radians
     float ar = (float)window_height / (float)window_width;
@@ -182,6 +183,10 @@ void update(void)
     int num_faces = array_length(mesh.faces);
     for (int i = 0; i < num_faces; i++)
     {
+        // draw only face 4
+        if (i != 4)
+            continue;
+
         face_t mesh_face = mesh.faces[i];
 
         vec3_t face_vertices[3];
@@ -243,9 +248,19 @@ void update(void)
             }
         }
 
+        // TODO: clipping
+        polygon_t polygon = create_polygon_from_triangle(
+            vec3_from_vec4(transformed_vertices[0]),
+            vec3_from_vec4(transformed_vertices[1]),
+            vec3_from_vec4(transformed_vertices[2]));
+
+        // Clip the polygon (may introduce new vertices)
+        clip_polygon(&polygon);
+        printf("Numer of polygon vertices after clipping: %d\n", polygon.num_vertices);
+
         vec4_t projected_points[3];
 
-        // loop all the three vertices to perform projection
+        // Loop all three vertices to perform projection and conversion to screen space
         for (int j = 0; j < 3; j++)
         {
             // projected_points[j] = project(vec3_from_vec4(transformed_vertices[j]));
