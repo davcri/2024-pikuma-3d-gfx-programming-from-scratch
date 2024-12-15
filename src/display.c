@@ -71,7 +71,7 @@ void draw_pixel(int x, int y, Color_ui32 col)
     }
 }
 
-void draw_rectangle(int topLeftX, int topLeftY, int width, int height, uint32_t fillColor)
+void draw_rect(int topLeftX, int topLeftY, int width, int height, uint32_t fillColor)
 {
     for (int y = imax(0, topLeftY); y < imin(framebuffer_height, topLeftY + height); y++)
     {

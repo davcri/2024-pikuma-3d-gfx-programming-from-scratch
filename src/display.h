@@ -39,7 +39,7 @@ extern SDL_Texture *color_buffer_texture;
 
 bool initialize_window(void);
 void draw_grid(Color_ui32 lineColor);
-void draw_rectangle(int topLeftX, int topLeftY, int width, int height, Color_ui32 fillColor);
+void draw_rect(int topLeftX, int topLeftY, int width, int height, Color_ui32 fillColor);
 void draw_pixel(int x, int y, Color_ui32 color);
 void draw_line(int x0, int y0, int x1, int y1, Color_ui32 color);
 void draw_triangle(int x0, int y0, int x1, int y1, int x2, int y2, Color_ui32 color);

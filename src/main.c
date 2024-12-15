@@ -45,14 +45,16 @@ void setup(void)
     // Load the texture data
     load_png_texture_data("./assets/cube.png");
 
-    float fov = M_PI / 3.0; // radians
-    float ar = (float)window_height / (float)window_width;
-    float z_near = 0.1;
-    float z_far = 100.;
-    proj_matrix = mat4_make_perspective(fov, ar, z_near, z_far);
+    float aspectx = (float)window_width / (float)window_height;
+    float aspecty = (float)window_height / (float)window_width;
+    float fovy = M_PI / 3.0; // radians
+    float fovx = atan(tan(fovy / 2) * aspectx) * 2.0;
+    float z_near = 1;
+    float z_far = 20.;
+    proj_matrix = mat4_make_perspective(fovy, aspecty, z_near, z_far);
 
     // Initialize frustum planes
-    init_frustum_planes(fov, z_near, z_far);
+    init_frustum_planes(fovx, fovy, z_near, z_far);
 }
 
 void process_input(void)
@@ -272,13 +274,6 @@ void update(void)
                 // Project
                 projected_points[j] = mat4_mul_vec4_project(proj_matrix, triangle_after_clipping.points[j]);
 
-                if (projected_points[j].w != 0)
-                {
-                    projected_points[j].x /= projected_points[j].w;
-                    projected_points[j].y /= projected_points[j].w;
-                    projected_points[j].z /= projected_points[j].w;
-                }
-
                 // Flip Y to account for inverted screen space / model y coordinates
                 projected_points[j].y *= -1;
 
@@ -322,7 +317,11 @@ void update(void)
 
 void render(void)
 {
-    // draw_grid(0xff888888);
+    //
+    SDL_RenderClear(renderer);
+
+    //
+    draw_grid(0xFF444444);
 
     // render all projected points
     for (int i = 0; i < num_triangles_to_render; i++)
@@ -374,9 +373,9 @@ void render(void)
         // render vertices
         if (render_method == RENDER_WIRE_VERTEX)
         {
-            draw_rectangle(triangle.points[0].x - 3, triangle.points[0].y - 3, 6, 6, 0xffffaaff);
-            draw_rectangle(triangle.points[1].x - 3, triangle.points[1].y - 3, 6, 6, 0xffffaaff);
-            draw_rectangle(triangle.points[2].x - 3, triangle.points[2].y - 3, 6, 6, 0xffffaaff);
+            draw_rect(triangle.points[0].x - 3, triangle.points[0].y - 3, 6, 6, 0xffffaaff);
+            draw_rect(triangle.points[1].x - 3, triangle.points[1].y - 3, 6, 6, 0xffffaaff);
+            draw_rect(triangle.points[2].x - 3, triangle.points[2].y - 3, 6, 6, 0xffffaaff);
         }
     }
 
