@@ -17,5 +17,6 @@ extern int texture_height;
 extern Color_ui32 *mesh_texture;
 
 void load_png_texture_data(char *filename);
+tex2_t tex2_clone(tex2_t* t);
 
 #endif // TEXTURE_H

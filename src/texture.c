@@ -17,6 +17,7 @@ uint32_t createColorARGB(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
 {
     return ((uint32_t)a << 24) | ((uint32_t)r << 16) | ((uint32_t)g << 8) | (uint32_t)b;
 }
+
 void load_png_texture_data(char *filename)
 {
 
@@ -125,4 +126,9 @@ void load_png_texture_data(char *filename)
 
     free(row_pointers);
     png_destroy_read_struct(&png, &info, NULL);
+}
+
+tex2_t tex2_clone(tex2_t* t) {
+    tex2_t result = { t-> u, t->v };
+    return result;
 }
