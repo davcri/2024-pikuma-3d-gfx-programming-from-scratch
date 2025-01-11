@@ -1,5 +1,17 @@
 CPU renderer written while following https://pikuma.com/courses/learn-3d-computer-graphics-programming
 
+# Features
+
+- Window & input handling (SDL)
+- Model OBJ loader
+- Texture PNG loader (libpng)
+- Mesh transform
+- Perspective camera
+- Camera fly movement
+- Clipping
+- Backface culling
+- Render modes: wireframe, solid, textured, vertex, back/front faces
+
 ![image](https://github.com/user-attachments/assets/68f666ab-547a-4b51-a8ad-fee1c5ccf5a1)
 
 # Build and run
