@@ -1,5 +1,7 @@
 CPU renderer written while following https://pikuma.com/courses/learn-3d-computer-graphics-programming
 
+![image](https://github.com/user-attachments/assets/68f666ab-547a-4b51-a8ad-fee1c5ccf5a1)
+
 # Build and run
 
 ```sh
